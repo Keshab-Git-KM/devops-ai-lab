@@ -1,0 +1,12 @@
+2024-05-12T10:31:02.1234567Z Run npm ci
+2024-05-12T10:31:03.4567890Z npm WARN using --force Recommended protections disabled.
+2024-05-12T10:31:09.8901234Z npm ERR! code ERESOLVE
+2024-05-12T10:31:09.8902345Z npm ERR! ERESOLVE could not resolve
+2024-05-12T10:31:09.8903456Z npm ERR!
+2024-05-12T10:31:09.8904567Z npm ERR! While resolving: my-app@1.4.0
+2024-05-12T10:31:09.8905678Z npm ERR! Found: react@18.2.0
+2024-05-12T10:31:09.8906789Z npm ERR! Could not resolve dependency:
+2024-05-12T10:31:09.8907890Z npm ERR! peer react@"^17.0.0" from react-legacy-widget@3.1.0
+2024-05-12T10:31:09.8909012Z npm ERR! Fix the upstream dependency conflict, or retry
+2024-05-12T10:31:10.0123456Z npm ERR! this command with --legacy-peer-deps
+2024-05-12T10:31:10.1234567Z Error: Process completed with exit code 1.

@@ -1,0 +1,11 @@
+2024-05-13T12:40:02.0000000Z Run kubectl rollout status deploy/api --timeout=120s
+2024-05-13T12:40:03.1000000Z Waiting for deployment "api" rollout to finish: 0 of 3 updated replicas are available...
+2024-05-13T12:41:10.2000000Z Events:
+2024-05-13T12:41:10.3000000Z   Type     Reason     Age                From     Message
+2024-05-13T12:41:10.4000000Z   Normal   Pulling    30s                kubelet  Pulling image "registry.example.com/api:v2.4.1"
+2024-05-13T12:41:10.5000000Z   Warning  Failed     28s                kubelet  Failed to pull image "registry.example.com/api:v2.4.1": rpc error: code = Unknown desc = failed to pull image
+2024-05-13T12:41:10.6000000Z   Warning  Failed     28s                kubelet  Error: ErrImagePull
+2024-05-13T12:41:10.7000000Z   Normal   BackOff    12s (x3 over 27s)  kubelet  Back-off pulling image
+2024-05-13T12:41:10.8000000Z   Warning  Failed     12s (x3 over 27s)  kubelet  Error: ImagePullBackOff
+2024-05-13T12:42:02.9000000Z error: deployment "api" exceeded its progress deadline
+2024-05-13T12:42:03.0000000Z Error: Process completed with exit code 1.

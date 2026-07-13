@@ -1,0 +1,13 @@
+2024-05-13T08:11:20.0000000Z Run terraform apply -auto-approve
+2024-05-13T08:11:22.1000000Z Acquiring state lock. This may take a few moments...
+2024-05-13T08:11:24.2000000Z ╷
+2024-05-13T08:11:24.3000000Z │ Error: Error acquiring the state lock
+2024-05-13T08:11:24.4000000Z │
+2024-05-13T08:11:24.5000000Z │ Error message: ConditionalCheckFailedException: The conditional request failed
+2024-05-13T08:11:24.6000000Z │ Lock Info:
+2024-05-13T08:11:24.7000000Z │   ID:        3f2b7c9a-1d4e-4a11-9b2c-8e77a1c2d3e4
+2024-05-13T08:11:24.8000000Z │   Path:      my-tf-state/prod/terraform.tfstate
+2024-05-13T08:11:24.9000000Z │   Operation: OperationTypeApply
+2024-05-13T08:11:25.0000000Z │   Who:       runner@fv-az123
+2024-05-13T08:11:25.1000000Z ╵
+2024-05-13T08:11:25.2000000Z Error: Process completed with exit code 1.

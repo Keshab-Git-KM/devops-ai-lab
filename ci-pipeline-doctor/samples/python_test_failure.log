@@ -1,0 +1,17 @@
+2024-05-12T11:02:44.0000000Z Run pytest -q
+2024-05-12T11:02:46.1111111Z ============================= test session starts ==============================
+2024-05-12T11:02:46.2222222Z collected 42 items
+2024-05-12T11:02:47.3333333Z tests/test_billing.py ....................                              [ 47%]
+2024-05-12T11:02:48.4444444Z tests/test_invoice.py ......F.....                                    [ 76%]
+2024-05-12T11:02:49.5555555Z =================================== FAILURES ===================================
+2024-05-12T11:02:49.6666666Z _______________________ test_invoice_total_with_tax ___________________________
+2024-05-12T11:02:49.7777777Z     def test_invoice_total_with_tax():
+2024-05-12T11:02:49.8888888Z         inv = Invoice(items=[Item("A", 100)])
+2024-05-12T11:02:49.9999999Z >       assert inv.total_with_tax(0.1) == 110
+2024-05-12T11:02:50.1000000Z E       AssertionError: assert 100 == 110
+2024-05-12T11:02:50.2000000Z E        +  where 100 = <Invoice>.total_with_tax(0.1)
+2024-05-12T11:02:50.3000000Z tests/test_invoice.py:31: AssertionError
+2024-05-12T11:02:50.4000000Z =========================== short test summary info ============================
+2024-05-12T11:02:50.5000000Z FAILED tests/test_invoice.py::test_invoice_total_with_tax - AssertionError: assert 100 == 110
+2024-05-12T11:02:50.6000000Z 1 failed, 41 passed in 4.02s
+2024-05-12T11:02:50.7000000Z Error: Process completed with exit code 1.

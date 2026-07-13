@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ app_name }}</title>
+  <style>
+    :root {
+      --bg: #0a0e14; --bg2: #0d1219; --panel: #12181f; --panel2: #161d26;
+      --border: #232c38; --border2: #2f3a49;
+      --text: #e6edf3; --muted: #8b98a9; --faint: #5b6673;
+      --accent: #6ea8fe; --accent2: #8b7cff; --accent-ink: #08111f;
+      --green: #3fb950; --yellow: #d6a01a; --orange: #e0823a; --red: #f6544a;
+      --mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+      --radius: 12px; --shadow: 0 8px 30px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; color: var(--text); background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(110,168,254,.08), transparent 60%),
+        radial-gradient(900px 500px at -10% 10%, rgba(139,124,255,.07), transparent 55%),
+        var(--bg);
+      font-family: -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
+      font-size: 14.5px; line-height: 1.55;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px);
+      background: rgba(10,14,20,.75); border-bottom: 1px solid var(--border);
+      padding: 14px 26px; display: flex; align-items: center; gap: 14px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo .mark {
+      width: 34px; height: 34px; display: grid; place-items: center; font-size: 19px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px; box-shadow: 0 4px 14px rgba(110,168,254,.35);
+    }
+    .logo h1 { font-size: 16px; margin: 0; font-weight: 650; letter-spacing: -.01em; }
+    .logo p { margin: 0; font-size: 11.5px; color: var(--muted); }
+    header .spacer { flex: 1; }
+    header .chip {
+      font-size: 12px; color: var(--muted); border: 1px solid var(--border);
+      padding: 4px 11px; border-radius: 999px; background: var(--panel);
+    }
+    header .chip b { color: var(--text); font-weight: 600; }
+    header a.chip:hover { border-color: var(--accent); color: var(--text); text-decoration: none; }
+
+    /* ── Layout ── */
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 24px; }
+    .grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.1fr); gap: 20px; }
+    @media (max-width: 940px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--bg2));
+      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .card-head {
+      display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-head h2 {
+      font-size: 12px; margin: 0; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .08em; font-weight: 650;
+    }
+    .card-head .spacer { flex: 1; }
+    .card-body { padding: 16px; }
+
+    /* ── Input ── */
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+    select, .btn {
+      font-family: inherit; font-size: 13px; border-radius: 9px; cursor: pointer;
+      border: 1px solid var(--border2); background: var(--panel2); color: var(--text);
+      padding: 8px 12px; transition: .15s;
+    }
+    select:hover, .btn:hover { border-color: var(--accent); }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: var(--accent-ink); border: none; font-weight: 650; padding: 9px 20px;
+      box-shadow: 0 4px 14px rgba(110,168,254,.3);
+    }
+    .btn.primary:disabled { opacity: .55; cursor: default; box-shadow: none; }
+    .btn.ghost { background: transparent; }
+    .btn.tiny { padding: 4px 9px; font-size: 12px; border-radius: 7px; }
+
+    .editor { position: relative; }
+    .editor.drag textarea { border-color: var(--accent); background: #0b131d; }
+    .editor .drop-hint {
+      position: absolute; inset: 0; display: none; place-items: center; pointer-events: none;
+      background: rgba(110,168,254,.06); border: 2px dashed var(--accent);
+      border-radius: 10px; color: var(--accent); font-weight: 600;
+    }
+    .editor.drag .drop-hint { display: grid; }
+    textarea {
+      width: 100%; height: 360px; resize: vertical; color: var(--text);
+      background: #0b0f16; border: 1px solid var(--border); border-radius: 10px;
+      padding: 13px; font-family: var(--mono); font-size: 12.5px; line-height: 1.5;
+    }
+    textarea:focus { outline: none; border-color: var(--accent); }
+    .editor-foot {
+      display: flex; align-items: center; gap: 10px; margin-top: 12px;
+    }
+    .counter { font-size: 12px; color: var(--faint); }
+    .editor-foot .spacer { flex: 1; }
+
+    /* ── Results ── */
+    .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
+    .empty .big { font-size: 44px; margin-bottom: 10px; opacity: .9; }
+    .empty p { margin: 6px 0 0; font-size: 13.5px; }
+
+    .stats { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+    .stat {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px;
+      border: 1px solid var(--border); background: var(--panel2); color: var(--muted);
+      padding: 5px 10px; border-radius: 999px;
+    }
+    .stat b { color: var(--text); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .dot.critical { background: var(--red); } .dot.high { background: var(--orange); }
+    .dot.medium { background: var(--yellow); } .dot.low, .dot.info { background: var(--green); }
+    .summary-line { font-size: 15px; margin: 0 0 14px; font-weight: 500; }
+
+    .issue {
+      border: 1px solid var(--border); border-radius: 11px; margin-bottom: 14px;
+      overflow: hidden; background: var(--panel);
+    }
+    .issue-top {
+      display: flex; align-items: flex-start; gap: 12px; padding: 14px 15px;
+      border-left: 3px solid var(--border);
+    }
+    .issue.critical .issue-top { border-left-color: var(--red); }
+    .issue.high .issue-top { border-left-color: var(--orange); }
+    .issue.medium .issue-top { border-left-color: var(--yellow); }
+    .issue.low .issue-top, .issue.info .issue-top { border-left-color: var(--green); }
+    .issue-top .idx {
+      width: 26px; height: 26px; flex: none; border-radius: 8px; display: grid; place-items: center;
+      background: var(--panel2); border: 1px solid var(--border2); font-size: 12px; color: var(--muted);
+    }
+    .issue h3 { margin: 0 0 8px; font-size: 15.5px; letter-spacing: -.01em; }
+    .badges { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
+    .badge {
+      font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border2);
+      color: var(--muted); text-transform: capitalize;
+    }
+    .badge.sev-critical { color: var(--red); border-color: rgba(246,84,74,.5); background: rgba(246,84,74,.08); }
+    .badge.sev-high { color: var(--orange); border-color: rgba(224,130,58,.5); background: rgba(224,130,58,.08); }
+    .badge.sev-medium { color: var(--yellow); border-color: rgba(214,160,26,.5); background: rgba(214,160,26,.08); }
+    .badge.sev-low, .badge.sev-info { color: var(--green); border-color: rgba(63,185,80,.5); background: rgba(63,185,80,.08); }
+    .conf { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+    .conf .bar { width: 54px; height: 5px; border-radius: 3px; background: var(--border2); overflow: hidden; }
+    .conf .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+    .issue-body { padding: 0 15px 15px 15px; }
+    .section { margin-top: 14px; }
+    .section .label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--faint);
+      font-weight: 650; margin-bottom: 6px;
+    }
+    .section p { margin: 0; color: var(--text); }
+    ol.steps { margin: 0; padding-left: 20px; }
+    ol.steps li { margin: 4px 0; }
+
+    .cmd { border: 1px solid var(--border2); border-radius: 9px; overflow: hidden; margin-top: 9px; }
+    .cmd-head {
+      display: flex; align-items: center; gap: 8px; padding: 7px 11px;
+      background: var(--panel2); border-bottom: 1px solid var(--border);
+    }
+    .cmd-head .cmd-label { font-size: 12px; color: var(--muted); flex: 1; }
+    .cmd-head .lang { font-size: 10.5px; color: var(--faint); font-family: var(--mono);
+      border: 1px solid var(--border2); border-radius: 5px; padding: 1px 6px; }
+    .cmd pre { margin: 0; padding: 11px 12px; background: #0a0f16; overflow-x: auto; }
+    .cmd code { font-family: var(--mono); font-size: 12.5px; color: #cfe0ff; white-space: pre; }
+
+    details.evidence { margin-top: 14px; }
+    details.evidence summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+    details.evidence pre {
+      margin: 8px 0 0; padding: 10px 12px; background: #0a0f16; border: 1px solid var(--border);
+      border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 11.5px; color: var(--muted);
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--panel2); border: 1px solid var(--accent); color: var(--text);
+      padding: 10px 18px; border-radius: 10px; font-size: 13px; box-shadow: var(--shadow);
+      opacity: 0; pointer-events: none; transition: .25s; z-index: 50;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .spinner {
+      display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border2);
+      border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite;
+      vertical-align: -3px; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    footer { text-align: center; color: var(--faint); font-size: 12px; padding: 26px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="mark">🩺</div>
+      <div>
+        <h1>{{ app_name }}</h1>
+        <p>Diagnose failed CI/CD builds &amp; get the exact fix</p>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <span class="chip" id="rulesChip">loading rules…</span>
+    <span class="chip">provider: <b>{{ provider }}</b></span>
+    <a class="chip" href="/history">📊 Dashboard</a>
+    <a class="chip" href="/docs" target="_blank">API ↗</a>
+  </header>
+
+  <div class="wrap">
+    <div class="grid">
+      <!-- Input -->
+      <div class="card">
+        <div class="card-head">
+          <h2>Build logs</h2>
+          <div class="spacer"></div>
+          <select id="sample"><option value="">Load a sample…</option></select>
+          <button class="btn tiny" id="upload">⬆ Upload .log</button>
+          <input type="file" id="file" accept=".log,.txt,text/plain" hidden />
+        </div>
+        <div class="card-body">
+          <div class="editor" id="editor">
+            <textarea id="logs" placeholder="Paste failed CI/CD build logs here — or drag a .log file in…"></textarea>
+            <div class="drop-hint">Drop log file to load</div>
+          </div>
+          <div class="editor-foot">
+            <span class="counter" id="counter">0 lines · 0 chars</span>
+            <div class="spacer"></div>
+            <button class="btn ghost tiny" id="clear">Clear</button>
+            <button class="btn primary" id="analyze">🔍 Diagnose</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="card">
+        <div class="card-head">
+          <h2>Diagnosis</h2>
+          <div class="spacer"></div>
+          <button class="btn tiny" id="copyReport" style="display:none">📋 Copy report (Markdown)</button>
+        </div>
+        <div class="card-body" id="result">
+          <div class="empty">
+            <div class="big">🩺</div>
+            <p><b>Paste your build logs and hit Diagnose.</b></p>
+            <p>You'll get the root cause, a plain-English explanation, step-by-step fixes, and copy-paste commands.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Runs offline &amp; free with the heuristic engine · plug in Gemini/Groq for LLM analysis · <a href="/health" target="_blank">health</a></footer>
+
+  <div id="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+    let lastResult = null;
+
+    function toast(msg) {
+      const t = $("toast"); t.textContent = msg; t.classList.add("show");
+      clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 1600);
+    }
+    async function copyText(text) {
+      try { await navigator.clipboard.writeText(text); toast("Copied to clipboard ✓"); }
+      catch { toast("Copy failed — select manually"); }
+    }
+
+    function updateCounter() {
+      const v = $("logs").value;
+      const lines = v ? v.split(/\r?\n/).length : 0;
+      $("counter").textContent = `${lines} lines · ${v.length} chars`;
+    }
+
+    async function loadSamples() {
+      try {
+        const { samples } = await (await fetch("/api/samples")).json();
+        for (const s of samples) {
+          const o = document.createElement("option");
+          o.value = s; o.textContent = "▸ " + s.replace(/_/g, " ");
+          $("sample").appendChild(o);
+        }
+      } catch {}
+    }
+    async function loadRules() {
+      try {
+        const { count } = await (await fetch("/api/rules")).json();
+        $("rulesChip").innerHTML = `detects <b>${count}</b> patterns`;
+      } catch { $("rulesChip").style.display = "none"; }
+    }
+
+    $("sample").addEventListener("change", async (e) => {
+      if (!e.target.value) return;
+      const { logs } = await (await fetch(`/api/samples/${e.target.value}`)).json();
+      $("logs").value = logs; updateCounter();
+    });
+    $("logs").addEventListener("input", updateCounter);
+    $("clear").addEventListener("click", () => { $("logs").value = ""; updateCounter(); });
+
+    // File upload + drag/drop
+    $("upload").addEventListener("click", () => $("file").click());
+    $("file").addEventListener("change", (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      f.text().then((t) => { $("logs").value = t; updateCounter(); toast(`Loaded ${f.name}`); });
+    });
+    const ed = $("editor");
+    ["dragenter","dragover"].forEach(ev => ed.addEventListener(ev, (e) => { e.preventDefault(); ed.classList.add("drag"); }));
+    ["dragleave","drop"].forEach(ev => ed.addEventListener(ev, (e) => { e.preventDefault(); if (ev !== "drop") ed.classList.remove("drag"); }));
+    ed.addEventListener("drop", (e) => {
+      ed.classList.remove("drag");
+      const f = e.dataTransfer.files[0]; if (!f) return;
+      f.text().then((t) => { $("logs").value = t; updateCounter(); toast(`Loaded ${f.name}`); });
+    });
+
+    // Copy delegation for command blocks
+    $("result").addEventListener("click", (e) => {
+      const btn = e.target.closest(".copy-cmd"); if (!btn) return;
+      copyText(btn.closest(".cmd").querySelector("code").textContent);
+    });
+    $("copyReport").addEventListener("click", () => { if (lastResult) copyText(buildMarkdown(lastResult)); });
+
+    $("analyze").addEventListener("click", async () => {
+      const logs = $("logs").value.trim();
+      if (!logs) { toast("Paste some logs first"); return; }
+      $("analyze").disabled = true;
+      $("result").innerHTML = '<div class="empty"><span class="spinner"></span>Analyzing logs…</div>';
+      try {
+        const res = await fetch("/api/analyze", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ logs }),
+        });
+        lastResult = await res.json();
+        render(lastResult);
+      } catch (err) {
+        $("result").innerHTML = `<div class="empty"><div class="big">⚠️</div><p>Error: ${esc(err)}</p></div>`;
+      } finally { $("analyze").disabled = false; }
+    });
+
+    function render(data) {
+      $("copyReport").style.display = data.issues.length ? "" : "none";
+      let html = "";
+
+      // Stats bar
+      const chips = [];
+      chips.push(`<span class="stat"><b>${data.issues.length}</b> issue${data.issues.length===1?"":"s"}</span>`);
+      for (const [sev, n] of Object.entries(data.severity_counts || {}))
+        chips.push(`<span class="stat"><span class="dot ${sev}"></span>${n} ${sev}</span>`);
+      if (data.detected_platform) chips.push(`<span class="stat">🏗 ${esc(data.detected_platform)}</span>`);
+      chips.push(`<span class="stat">${data.log_line_count} lines scanned</span>`);
+      chips.push(`<span class="stat">engine: ${esc(data.provider)}</span>`);
+      html += `<div class="stats">${chips.join("")}</div>`;
+      html += `<p class="summary-line">${esc(data.summary)}</p>`;
+
+      if (!data.issues.length) {
+        html += `<div class="empty"><div class="big">🤔</div><p>No known failure pattern matched. The logs may need manual review, or try the LLM provider for open-ended reasoning.</p></div>`;
+        $("result").innerHTML = html; return;
+      }
+
+      data.issues.forEach((it, i) => {
+        html += `<div class="issue ${it.severity}">
+          <div class="issue-top">
+            <div class="idx">${i + 1}</div>
+            <div style="flex:1">
+              <h3>${esc(it.title)}</h3>
+              <div class="badges">
+                <span class="badge sev-${it.severity}">${it.severity}</span>
+                <span class="badge">${esc(it.category)}</span>
+                <span class="conf"><span class="bar"><i style="width:${Math.round(it.confidence*100)}%"></i></span>${Math.round(it.confidence*100)}% confidence</span>
+              </div>
+            </div>
+          </div>
+          <div class="issue-body">
+            <div class="section"><div class="label">Root cause</div><p>${esc(it.root_cause)}</p></div>
+            ${it.explanation ? `<div class="section"><div class="label">What's happening</div><p>${esc(it.explanation)}</p></div>` : ""}
+            ${it.fix_steps && it.fix_steps.length ? `<div class="section"><div class="label">How to fix — ${esc(it.suggested_fix)}</div><ol class="steps">${it.fix_steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol></div>` : `<div class="section"><div class="label">Fix</div><p>${esc(it.suggested_fix)}</p></div>`}
+            ${(it.commands||[]).map(renderCmd).join("")}
+            ${it.evidence && it.evidence.length ? `<details class="evidence"><summary>Show matched log lines (${it.evidence.length})</summary><pre>${esc(it.evidence.join("\n"))}</pre></details>` : ""}
+            ${it.docs_url ? `<div class="section"><a href="${esc(it.docs_url)}" target="_blank" rel="noopener">📚 Documentation ↗</a></div>` : ""}
+          </div>
+        </div>`;
+      });
+      $("result").innerHTML = html;
+    }
+
+    function renderCmd(c) {
+      return `<div class="cmd">
+        <div class="cmd-head">
+          <span class="cmd-label">${esc(c.label)}</span>
+          <span class="lang">${esc(c.language)}</span>
+          <button class="btn tiny copy-cmd">Copy</button>
+        </div>
+        <pre><code>${esc(c.code)}</code></pre>
+      </div>`;
+    }
+
+    function buildMarkdown(data) {
+      let md = `## 🩺 CI Pipeline Doctor\n\n_${data.summary}_\n`;
+      if (data.detected_platform) md += `\n**Detected platform:** ${data.detected_platform}\n`;
+      md += "\n";
+      data.issues.forEach((it, i) => {
+        md += `### ${i+1}. ${it.title}\n\`${it.severity}\` · ${Math.round(it.confidence*100)}% confidence\n\n`;
+        md += `**Root cause:** ${it.root_cause}\n\n`;
+        if (it.explanation) md += `**What's happening:** ${it.explanation}\n\n`;
+        md += `**Fix:** ${it.suggested_fix}\n\n`;
+        if (it.fix_steps && it.fix_steps.length) { it.fix_steps.forEach((s,n)=> md += `${n+1}. ${s}\n`); md += "\n"; }
+        (it.commands||[]).forEach(c => md += `_${c.label}_\n\`\`\`${c.language}\n${c.code}\n\`\`\`\n\n`);
+      });
+      return md;
+    }
+
+    loadSamples(); loadRules(); updateCounter();
+  </script>
+</body>
+</html>

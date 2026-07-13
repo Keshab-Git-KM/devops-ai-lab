@@ -1,0 +1,10 @@
+2024-05-12T14:20:01.0000000Z Run docker build -t my-service:ci .
+2024-05-12T14:20:03.1000000Z #5 [2/6] RUN npm run build
+2024-05-12T14:20:55.2000000Z #5 52.03 > my-service@2.0.0 build
+2024-05-12T14:20:55.3000000Z #5 52.04 > webpack --mode production
+2024-05-12T14:21:40.4000000Z #5 97.11 <--- Last few GCs --->
+2024-05-12T14:21:40.5000000Z #5 97.20 FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+2024-05-12T14:21:41.6000000Z #5 ERROR: executor failed running [/bin/sh -c npm run build]: exit code 137
+2024-05-12T14:21:41.7000000Z ------
+2024-05-12T14:21:41.8000000Z failed to solve: executor failed running [/bin/sh -c npm run build]: exit code 137
+2024-05-12T14:21:41.9000000Z Error: Process completed with exit code 1.
