@@ -5,41 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ app_name }}</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     :root {
-      --bg: #0a0e14; --bg2: #0d1219; --panel: #12181f; --panel2: #161d26;
-      --border: #232c38; --border2: #2f3a49;
-      --text: #e6edf3; --muted: #8b98a9; --faint: #5b6673;
-      --accent: #6ea8fe; --accent2: #8b7cff; --accent-ink: #08111f;
-      --green: #3fb950; --yellow: #d6a01a; --orange: #e0823a; --red: #f6544a;
+      --bg: #0F172A; --bg2: #0b1120; --panel: #1E293B; --panel2: #273449;
+      --border: #2a3852; --border2: #3a4a63;
+      --text: #F1F5F9; --muted: #94A3B8; --faint: #64748B;
+      --accent: #22C55E; --accent2: #10B981; --accent-ink: #052e16;
+      --accent-glow: rgba(34,197,94,.35);
+      --green: #22C55E; --yellow: #EAB308; --orange: #F59E0B; --red: #EF4444;
+      --sans: 'Inter', -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
       --mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
-      --radius: 12px; --shadow: 0 8px 30px rgba(0,0,0,.35);
+      --radius: 14px; --shadow: 0 10px 34px rgba(0,0,0,.45);
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
       margin: 0; color: var(--text); background:
-        radial-gradient(1200px 600px at 80% -10%, rgba(110,168,254,.08), transparent 60%),
-        radial-gradient(900px 500px at -10% 10%, rgba(139,124,255,.07), transparent 55%),
+        radial-gradient(1200px 600px at 82% -12%, rgba(34,197,94,.10), transparent 60%),
+        radial-gradient(900px 520px at -10% 8%, rgba(16,185,129,.07), transparent 55%),
         var(--bg);
-      font-family: -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
-      font-size: 14.5px; line-height: 1.55;
+      font-family: var(--sans);
+      font-size: 14.5px; line-height: 1.55; -webkit-font-smoothing: antialiased;
     }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
     /* ── Header ── */
     header {
-      position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px);
-      background: rgba(10,14,20,.75); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 20; backdrop-filter: blur(12px);
+      background: rgba(15,23,42,.72); border-bottom: 1px solid var(--border);
       padding: 14px 26px; display: flex; align-items: center; gap: 14px;
     }
-    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo { display: flex; align-items: center; gap: 11px; }
     .logo .mark {
-      width: 34px; height: 34px; display: grid; place-items: center; font-size: 19px;
+      width: 36px; height: 36px; display: grid; place-items: center; color: var(--accent-ink);
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-radius: 10px; box-shadow: 0 4px 14px rgba(110,168,254,.35);
+      border-radius: 11px; box-shadow: 0 4px 16px rgba(34,197,94,.4), inset 0 1px 0 rgba(255,255,255,.25);
     }
-    .logo h1 { font-size: 16px; margin: 0; font-weight: 650; letter-spacing: -.01em; }
+    .logo .mark svg { width: 20px; height: 20px; }
+    .logo h1 { font-size: 16.5px; margin: 0; font-weight: 700; letter-spacing: -.02em;
+      text-shadow: 0 0 18px rgba(34,197,94,.25); }
     .logo p { margin: 0; font-size: 11.5px; color: var(--muted); }
     header .spacer { flex: 1; }
     header .chip {
@@ -81,7 +86,7 @@
     .btn.primary {
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       color: var(--accent-ink); border: none; font-weight: 650; padding: 9px 20px;
-      box-shadow: 0 4px 14px rgba(110,168,254,.3);
+      box-shadow: 0 4px 14px rgba(34,197,94,.3);
     }
     .btn.primary:disabled { opacity: .55; cursor: default; box-shadow: none; }
     .btn.ghost { background: transparent; }
@@ -91,7 +96,7 @@
     .editor.drag textarea { border-color: var(--accent); background: #0b131d; }
     .editor .drop-hint {
       position: absolute; inset: 0; display: none; place-items: center; pointer-events: none;
-      background: rgba(110,168,254,.06); border: 2px dashed var(--accent);
+      background: rgba(34,197,94,.06); border: 2px dashed var(--accent);
       border-radius: 10px; color: var(--accent); font-weight: 600;
     }
     .editor.drag .drop-hint { display: grid; }
@@ -146,10 +151,10 @@
       font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border2);
       color: var(--muted); text-transform: capitalize;
     }
-    .badge.sev-critical { color: var(--red); border-color: rgba(246,84,74,.5); background: rgba(246,84,74,.08); }
-    .badge.sev-high { color: var(--orange); border-color: rgba(224,130,58,.5); background: rgba(224,130,58,.08); }
-    .badge.sev-medium { color: var(--yellow); border-color: rgba(214,160,26,.5); background: rgba(214,160,26,.08); }
-    .badge.sev-low, .badge.sev-info { color: var(--green); border-color: rgba(63,185,80,.5); background: rgba(63,185,80,.08); }
+    .badge.sev-critical { color: var(--red); border-color: rgba(239,68,68,.5); background: rgba(239,68,68,.1); }
+    .badge.sev-high { color: var(--orange); border-color: rgba(245,158,11,.5); background: rgba(245,158,11,.1); }
+    .badge.sev-medium { color: var(--yellow); border-color: rgba(234,179,8,.5); background: rgba(234,179,8,.1); }
+    .badge.sev-low, .badge.sev-info { color: var(--green); border-color: rgba(34,197,94,.5); background: rgba(34,197,94,.1); }
     .conf { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
     .conf .bar { width: 54px; height: 5px; border-radius: 3px; background: var(--border2); overflow: hidden; }
     .conf .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
@@ -198,12 +203,26 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     footer { text-align: center; color: var(--faint); font-size: 12px; padding: 26px; }
+
+    /* ── motion & focus polish (from ui-ux-pro-max: stagger + visible focus) ── */
+    @keyframes cardIn { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: none; } }
+    .card { animation: cardIn .5s cubic-bezier(.2,.7,.2,1) backwards; }
+    .card:nth-child(2) { animation-delay: .07s; }
+    .issue { animation: cardIn .45s cubic-bezier(.2,.7,.2,1) backwards;
+      transition: box-shadow .2s, border-color .2s, transform .2s; }
+    .issue:hover { border-color: var(--border2); transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.4); }
+    .btn { transition: border-color .15s, box-shadow .15s, transform .12s; }
+    .btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
+    .btn.primary:active { transform: translateY(0); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">
-      <div class="mark">🩺</div>
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
       <div>
         <h1>{{ app_name }}</h1>
         <p>Diagnose failed CI/CD builds &amp; get the exact fix</p>
@@ -236,7 +255,7 @@
             <span class="counter" id="counter">0 lines · 0 chars</span>
             <div class="spacer"></div>
             <button class="btn ghost tiny" id="clear">Clear</button>
-            <button class="btn primary" id="analyze">🔍 Diagnose</button>
+            <button class="btn primary" id="analyze"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Diagnose</button>
           </div>
         </div>
       </div>
@@ -368,7 +387,7 @@
       }
 
       data.issues.forEach((it, i) => {
-        html += `<div class="issue ${it.severity}">
+        html += `<div class="issue ${it.severity}" style="animation-delay:${i * 70}ms">
           <div class="issue-top">
             <div class="idx">${i + 1}</div>
             <div style="flex:1">
